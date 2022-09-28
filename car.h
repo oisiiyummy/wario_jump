@@ -24,11 +24,37 @@ public:
 	// サイズの取得
 	Vec2 getSize() const { return m_size; }
 
+	Vec2 getVec() const { return m_vec; }
+
+private:
+	// 車の挙動のバリエーション
+	typedef enum MoveType
+	{
+		kMoveTypeNormal,
+		kMoveTypeStop,
+		kMoveTypeJump,
+		kMoveTypeReturn,
+
+		kMoveTypeNum
+	}MoveType;
+
+private:
+	void updateNormal();	// まっすぐ進む
+	void updateStop();	// 一時停止フェイント
+	void updateJump();	// ジャンプする
+	void updateReturn();	//　途中で引き返す（必ず成功）
+
 private:
 	// グラフィックハンドル
 	int m_handle;
 	// グラフィックの幅と高さ	当たり判定にも使用する
 	Vec2 m_size;
+
+	// 車の動き
+	MoveType m_moveType;
+
+	// 移動開始までの待ち時間（フレーム数）
+	int m_waitFrame;
 
 	// 位置
 	Vec2 m_pos;

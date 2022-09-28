@@ -9,9 +9,9 @@ namespace
 	constexpr float kSizeY = 128.0f;
 
 	// ƒWƒƒƒ“ƒv—Í
-	constexpr float kJumpacc = -30.0f;
+	constexpr float kJumpacc = -20.0f;
 	// d—Í
-	constexpr float kGravity = 2.0f;
+	constexpr float kGravity = 0.7f;
 }
 
 Player::Player()
