@@ -2,6 +2,18 @@
 #include "game.h"
 #include "player.h"
 
+namespace
+{
+	// キャラクターのサイズ
+	constexpr float kSizeX = 128.0f;
+	constexpr float kSizeY = 128.0f;
+
+	// ジャンプ力
+	constexpr float kJumpacc = -30.0f;
+	// 重力
+	constexpr float kGravity = 2.0f;
+}
+
 Player::Player()
 {
 	m_handle = -1;
@@ -32,14 +44,26 @@ void Player:: setup(float fieldY)
 
 void Player::update()
 {
-//	m_pos += m_vec;
+	if (m_isDead)	return;
 
+	m_pos += m_vec;
+		// 地面との当たり
+	bool isField = false;
+		if (m_pos.y > m_fieldY - m_graphSize.y)
+		{
+			m_pos.y = m_fieldY - m_graphSize.y;
+			isField = true;
+		}
 	// キー入力処理
 	int padState = GetJoypadInputState(DX_INPUT_KEY_PAD1);
 	if (padState & PAD_INPUT_1)
 	{
-			m_isJumpUp = true;
+		if (isField)
+		{
+			m_vec.y = kJumpacc;	// ジャンプ開始
+		}
 	}
+	m_vec.y += kGravity;
 
 	if (m_isJumpUp)
 	{
@@ -78,9 +102,9 @@ void Player::draw()
 bool Player::isCol(Car& car)
 {
 	float playerLeft = getPos().x;
-	float playerRight = getPos().x + getColSize().x / 2;
+	float playerRight = getPos().x + kSizeX;
 	float playerTop = getPos().y;
-	float playerBottom = getPos().y + getColSize().y;
+	float playerBottom = getPos().y + kSizeY;
 
 	float carLeft = car.getPos().x;
 	float carRight = car.getPos().x + car.getSize().x;
