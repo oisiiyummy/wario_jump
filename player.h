@@ -20,6 +20,9 @@ public:
 	// •`‰æ
 	void draw();
 
+	// ‚Ş‚è‚°[
+	//static void getDistance() { return m_pos; }
+
 	// Ô‚Æ‚ÌÕ“Ë”»’è
 	bool isCol(Car& car);
 

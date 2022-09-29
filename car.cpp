@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "game.h"
 #include "car.h"
+#include "player.h"
 
 namespace
 {
@@ -8,12 +9,12 @@ namespace
 	constexpr int kWaitFrameMin = 60;
 	constexpr int kWaitFrameMax = 180;
 
-	constexpr float kSpeed = 5.0f;
+	constexpr float kSpeed = 10.0f;
 
 	// ジャンプ力
-	constexpr float kJumpacc = -8.0f;
+	constexpr float kJumpacc = -15.0f;
 	// 重力
-	constexpr float kGravity = 0.25f;
+	constexpr float kGravity = 0.5f;
 }
 
 Car::Car()
@@ -26,6 +27,8 @@ Car::Car()
 	m_moveType = kMoveTypeNormal;
 
 	m_waitFrame = 0;
+	m_StopOneTimeStop = 0;
+	m_getPos = 0.0f;
 }
 
 void Car::setGraphic(int handle)
@@ -62,10 +65,13 @@ void Car::setup(float fieldY)
 		m_moveType = kMoveTypeReturn;
 	}
 	// デバッグ用
-	m_moveType = kMoveTypeReturn;
+	m_moveType = kMoveTypeNormal;
 
 	// 動き始めるまでの時間を設定　1秒から３秒待つ　60フレームから180フレーム
 	m_waitFrame = GetRand(kWaitFrameMax - kWaitFrameMin) + kWaitFrameMin;
+	
+	// 車が止まっている時間1秒待つ
+	m_StopOneTimeStop = kWaitFrameMin;
 }
 
 void Car::update()
@@ -90,8 +96,10 @@ void Car::update()
 	case kMoveTypeReturn:
 		updateReturn();
 		break;
+	default:
+		updateNormal();
+		break;
 	}
-	updateNormal();
 }
 
 void Car::draw()
@@ -108,10 +116,6 @@ void Car::updateNormal()
 	m_pos += m_vec;
 }
 // 一時停止フェイント
-void Car::updateStop()
-{
-
-}
 // ジャンプする
 void Car::updateJump()
 {
@@ -133,9 +137,22 @@ void Car::updateJump()
 		m_vec.y += kGravity;
 	}
 }
+void Car::updateStop()
+{
+	m_pos += m_vec;
+	if (m_pos.x < 400 && m_StopOneTimeStop > 0)
+	{
+		m_StopOneTimeStop--;
+		m_vec.x = 0;
+		return;
+	}
+	m_vec.x = -kSpeed;
+}
+
 //　途中で引き返す（必ず成功）
 void Car::updateReturn()
 {
+	m_pos += m_vec;
 	if (m_pos.x < 400)
 	{
 		m_vec.x *= -1;

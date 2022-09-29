@@ -21,6 +21,9 @@ public:
 
 	// 位置の取得
 	Vec2 getPos() const { return m_pos; }
+
+	// 現在のプレイヤー位置の取得
+	float getPlayerPos() { return m_getPos; }
 	// サイズの取得
 	Vec2 getSize() const { return m_size; }
 
@@ -56,10 +59,15 @@ private:
 	// 移動開始までの待ち時間（フレーム数）
 	int m_waitFrame;
 
+	// 一時停止の待ち時間（フレーム数）
+	int m_StopOneTimeStop;
+
 	// 位置
 	Vec2 m_pos;
 	// ベクトル
 	Vec2 m_vec;
 	// 地面の高さ
 	float m_fieldY;
+	// playerの位置情報の取得
+	float m_getPos;
 };

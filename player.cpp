@@ -119,3 +119,8 @@ bool Player::isCol(Car& car)
 
 	return true;
 }
+
+//void Player::getDistance()
+//{
+//	//int Distance_Interval = m_pos.x;
+//}
