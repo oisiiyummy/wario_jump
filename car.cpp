@@ -7,6 +7,7 @@ namespace
 
 	constexpr int kWaitFrameMin = 60;
 	constexpr int kWaitFrameMax = 180;
+
 	constexpr float kSpeed = 5.0f;
 
 	// ジャンプ力
@@ -21,7 +22,9 @@ Car::Car()
 	//GetRand(100);	//  0~100
 	m_handle = -1;
 	m_fieldY = 0.0f;
+
 	m_moveType = kMoveTypeNormal;
+
 	m_waitFrame = 0;
 }
 
@@ -59,8 +62,7 @@ void Car::setup(float fieldY)
 		m_moveType = kMoveTypeReturn;
 	}
 	// デバッグ用
-	m_moveType = kMoveTypeJump;
-
+	m_moveType = kMoveTypeReturn;
 
 	// 動き始めるまでの時間を設定　1秒から３秒待つ　60フレームから180フレーム
 	m_waitFrame = GetRand(kWaitFrameMax - kWaitFrameMin) + kWaitFrameMin;
@@ -73,6 +75,7 @@ void Car::update()
 		m_waitFrame--;
 		return;
 	}
+
 	switch (m_moveType)
 	{
 	case kMoveTypeNormal:
@@ -133,5 +136,8 @@ void Car::updateJump()
 //　途中で引き返す（必ず成功）
 void Car::updateReturn()
 {
-
+	if (m_pos.x < 400)
+	{
+		m_vec.x *= -1;
+	}
 }

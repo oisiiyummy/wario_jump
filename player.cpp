@@ -11,6 +11,7 @@ namespace
 	// ƒWƒƒƒ“ƒv—Í
 	constexpr float kJumpacc = -20.0f;
 	// d—Í
+
 	constexpr float kGravity = 0.7f;
 }
 
