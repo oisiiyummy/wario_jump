@@ -130,7 +130,7 @@ void Car::updateJump()
 
 	if (isField)
 	{
-		m_vec.y = kJumpacc;	// ジャンプ開始
+		m_vec.y = kJumpacc;	// ジャンプ開始z
 	}
 	if (m_pos.x < 400)
 	{

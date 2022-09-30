@@ -3,6 +3,8 @@
 #include "game.h"
 #include "player.h"
 #include "car.h"
+#include "SceneMain.h"
+#include "SceneTitle.h"
 
 namespace
 {
@@ -25,19 +27,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	int hPlayer = LoadGraph("data/player.png");
-	int hCar = LoadGraph("data/car.png");
-
-	Player player;
-	player.setGraphic(hPlayer);
-	player.setup(kFieldY);
-
-	Car car;
-	car.setGraphic(hCar);
-	car.setup(kFieldY);
-
 	// ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	// 現在のシーン番号  0:Title 1:Main 
+	int sceneNo = 0;
+
+	SceneTitle sceneTitle;
+	SceneMain sceneMain;
+
+	switch (sceneNo)
+	{
+	case 0:
+		sceneTitle.init();
+		break;
+	case 1:
+		sceneMain.init();
+		break;
+	}
 
 	while (ProcessMessage() == 0)
 	{
@@ -45,22 +52,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 画面のクリア
 		ClearDrawScreen();
 
-		player.update();
-		car.update();
-
-		player.getPos();
-
-		if (player.isCol(car))
+		// シーン変更フラグ
+		bool isChange = false;
+		switch (sceneNo)
 		{
-			player.setDead(true);
+		case 0:
+			isChange = sceneTitle.update();
+			sceneTitle.draw();
+			if (isChange)
+			{
+				sceneTitle.end();
+
+				sceneMain.init();
+				sceneNo = 1;
+			}
+			break;
+		case 1:
+			sceneMain.update();
+			sceneMain.draw();
+			break;
 		}
-
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "%f", car.getPos().x, true);
-
-		// 地面の描画
-		DrawLine(0, kFieldY, Game::kScreenWidth, kFieldY, GetColor(255, 255, 255));
-		player.draw();
-		car.draw();
 
 		//裏画面を表画面を入れ替える
 		ScreenFlip();
@@ -74,8 +85,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
-	DeleteGraph(hPlayer);
-	DeleteGraph(hCar);
+	switch (sceneNo)
+	{
+	case 0:
+		sceneTitle.end();
+		break;
+	case 1:
+		sceneMain.end();
+		break;
+	}
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
